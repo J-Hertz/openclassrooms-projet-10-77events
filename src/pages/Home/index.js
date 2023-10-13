@@ -13,7 +13,12 @@ import Modal from "../../containers/Modal";
 import { useData } from "../../contexts/DataContext";
 
 const Page = () => {
-  const {last} = useData()
+  const {data} = useData()
+  const events = data ? data.events || [] : [];
+  const sortedEvents = events.sort((a, b) => new Date(b.date) - new Date(a.date));
+  const latestEvent = sortedEvents.length > 0 ? sortedEvents[0] : null;
+
+
   return <>
     <header>
       <Menu />
@@ -22,7 +27,7 @@ const Page = () => {
       <section className="SliderContainer">
         <Slider />
       </section>
-      <section className="ServicesContainer">
+      <section className="ServicesContainer" id="nos-services">
         <h2 className="Title">Nos services</h2>
         <p>Nous organisons des événements sur mesure partout dans le monde</p>
         <div className="ListContainer">
@@ -51,11 +56,11 @@ const Page = () => {
           </ServiceCard>
         </div>
       </section>
-      <section className="EventsContainer">
+      <section className="EventsContainer" id="nos-realisations">
         <h2 className="Title">Nos réalisations</h2>
         <EventList />
       </section>
-      <section className="PeoplesContainer">
+      <section className="PeoplesContainer" id="notre-equipe">
         <h2 className="Title">Notre équipe</h2>
         <p>Une équipe d’experts dédiés à l’ogranisation de vos événements</p>
         <div className="ListContainer">
@@ -116,13 +121,15 @@ const Page = () => {
     <footer className="row">
       <div className="col presta">
         <h3>Notre derniére prestation</h3>
-        <EventCard
-          imageSrc={last?.cover}
-          title={last?.title}
-          date={new Date(last?.date)}
-          small
-          label="boom"
-        />
+        {latestEvent && (
+  <EventCard
+    imageSrc={latestEvent.cover}
+    title={latestEvent.title}
+    date={new Date(latestEvent.date)}
+    small
+    label={latestEvent.type}
+  />
+)}
       </div>
       <div className="col contact">
         <h3>Contactez-nous</h3>
